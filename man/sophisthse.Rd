@@ -8,7 +8,7 @@
 sophisthse(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
 }
 \arguments{
-\item{series.name}{the names of the time series}
+\item{series.name}{the names of the time series, i.e. "WAG_Y"}
 
 \item{output}{the desired output format, either 'zoo' or 'data.frame'}
 }

@@ -81,7 +81,7 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 #'
 #' If many time series are requested at once they should be of the same frequency.
 #'
-#' @param series.name the names of the time series
+#' @param series.name the names of the time series, i.e. "WAG_Y"
 #' @param output the desired output format, either 'zoo' or 'data.frame'
 #' @return data.frame with the corresponding time series
 #' @export
@@ -125,18 +125,18 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
   # pretty time index
   
   # determine the type of data: yearly/quarterly/mothly
-  t.type <- "Y" # by default we assume early data
-  if (length(grep("[IV]",df$T))>1) t.type <- "Q" # quarterly data
-  if (length(grep("^[23456789]$",df$T))>1) t.type <- "M" # monthly data
+  t.type <- 1 # by default we assume early data
+  if (length(grep("[IV]",df$T))>1) t.type <- 4 # quarterly data
+  if (length(grep("^[23456789]$",df$T))>1) t.type <- 12 # monthly data
   
   # convert data to correct format
-  if (t.type=="Y") df$T <- as.numeric(df$T)
-  if (t.type=="M") {
+  if (t.type==1) df$T <- as.numeric(df$T)
+  if (t.type==12) {
     # we assume that the first observation has the year
     start.date <- as.yearmon(df$T[1],format="%Y %m")
     df$T <- start.date + seq(from=0,by=1/12,length=nrow(df))
   }
-  if (t.type=="Q") {
+  if (t.type==4) {
     # we assume that the first observation has the year
     df$T <- gsub(" IV$","-4",df$T)
     df$T <- gsub(" III$","-3",df$T)
@@ -150,17 +150,19 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
   # get methodology, comment and source
 
   n.vars <- ncol(df)-1 # remove "T", the name of index
+  						
+  if (output[1] == "zoo") 
+    df <- zoo( select(df, -T), order.by = df$T,
+                 frequency = t.type)
   
   attr(df,"methodology") <- c("",
-    get_stat_hse_info_vector(series.name,n.vars,"methodology"))
-
+                              get_stat_hse_info_vector(series.name,n.vars,"methodology"))
   attr(df,"source") <- c("",
-    get_stat_hse_info_vector(series.name,n.vars,"source"))
-  
+                         get_stat_hse_info_vector(series.name,n.vars,"source"))  
   attr(df,"comment") <- c("",
-    get_stat_hse_info_vector(series.name,n.vars,"comment"))
-						
-  if (output[1] == "zoo") df <- as.zoo(df)
+                          get_stat_hse_info_vector(series.name,n.vars,"comment"))
+    
+  
   return(df)  
 }
 

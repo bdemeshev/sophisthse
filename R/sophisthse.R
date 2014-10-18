@@ -210,15 +210,51 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame")
   metadata$comment <- 
     c("",get_stat_hse_info_vector(series.name,n.vars,"comment"))
   
+  metadata$freq <- t.type
   
   if (output[1] == "zoo") 
     df <- zoo( select(df, -T), order.by = df$T,
                frequency = t.type)
+  
+  metadata <- filter(metadata, !tsname=="T")
   attr(df,"metadata") <- metadata  
   
   return(df)  
 }
 
+#' Obtain multivariate time series from sophist.hse.ru
+#'
+#' This function obtains multivariate time series from sophist.hse.ru
+#'
+#' The output may be choosen to be "zoo" or "data.frame". Metadata is saved
+#' into the attribute "metadata". 
+#'
+#' @param series.name the names of the time series, i.e. "WAG_Y"
+#' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @return data.frame with the corresponding time series
+#' @export
+#' @examples
+#' df <- sophisthse("IP_EA_Q")
+#' df <- sophisthse("WAG_Y")
+sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame")) {  
+  req_type <- requested_freq(series.name)
+  if (length(unique(req_type))>1) warning("Probably requested series have different frequency.")
+  
+  all_data <- sophisthse0(series.name[1],output ="data.frame")
+  all_meta <- attr(all_data,"metadata")  
+  series.name <- series.name[-1]
+  
+  for (sname in series.name) {
+    one_data <- sophisthse0(sname,output ="data.frame")
+    one_meta <- attr(one_data,"metadata")
+    all_meta <- rbind_list(all_meta,one_meta)
+    all_data <- merge(all_data,one_data,by = "T",all = TRUE)
+  }
 
-
-
+  if (output[1] == "zoo") 
+    all_data <- zoo( select(all_data, -T), order.by = all_data$T,
+               frequency = unique(all_meta$freq)) 
+  
+  attr(all_data,"metadata") <- all_meta
+  return(all_data)
+}

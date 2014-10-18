@@ -10,6 +10,7 @@ install_github("bdemeshev/sophisthse")
 
 Basic usage example:
 ```r
+library("sophisthse")
 df <- sophisthse("WAG_Y")
 ```
 

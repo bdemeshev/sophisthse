@@ -22,7 +22,7 @@ wgpd <- sophisthse(c("WAG_Y","GDPVA_Y"))
 wagez <- sophisthse(c("WAG_Y","GDPVA_Y"), output = "data.frame")
 ```
 
-Метаданные о рядах сохраняются в аттрибуте `metadata`. Их можно увидеть с помощью команд:
+Метаданные о рядах сохраняются в атрибуте `metadata`. Их можно увидеть с помощью команд:
 ```r
 df <- sophisthse("WAG_Y")
 info <- attr(df,"metadata")

@@ -1,0 +1,26 @@
+
+econru 0.2
+----------
+* excel2date for converting excel codes to numbers
+* one_factor to unify misspelled level names
+* cleanup from package skeleton
+
+econru 0.1.5
+-----------
+* xmodel and xmatrix functions for LaTeX output of models and matrices
+
+econru 0.1.3
+-----------
+
+* changed function names
+* now xml is downloaded from cbr.ru instead of html
+* cbrcurrency, cbrswap, cbrmetal
+* stathse
+* googleelevation, panoramio
+
+
+econru 0.1
+-----------
+
+* the first public verison of the econru package
+* cbr_currency, stat_hse, panoramio, google_elevation

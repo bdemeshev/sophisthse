@@ -3,18 +3,8 @@
 #' @name sophisthse
 #' @docType package
 #' @author Boris Demeshev 
-
-# require(XML)
-# require(RCurl)
-# require(zoo) # for year-quarterly class 
-# require(rjson)
-# require(plyr)
-
-.onLoad <- function(libname = find.package("sophisthse"), pkgname = "sophisthse") {
-  # warning("One bear with balalaika and vodka has joined your R session!")
-}
-
-
+#' @import XML dplyr RCurl zoo
+NULL
 
 
 #' Convert string with a number in Russian tradition in numeric
@@ -38,23 +28,30 @@ rus2num <- function(x) {
 
 
 
-# drops last entry in the list x if this entry is character
-.droplast <- function(x) {
-  n.obs <- length(x)
-  if (class(x[[n.obs]])=="character") x <- x[-n.obs]
-  return(x)
-}
 
+#' Obtain additional information for specific time series
+#'
+#' Obtain additional information for specific time series from sophist.hse.ru
+#'
+#' Internal function. Obtain additional information for specific time series
+#' from sophist.hse.ru. Either "methodology", "source" or "comment".
+#'
+#' @param series.name the names of the time series
+#' @param n.vars number of variables
+#' @param info type of information (methodology/source/comment)
+#' @return character vector with info for each variable
+#' @examples
+#' info <- get_stat_hse_info_vector("IP_EA_Q", 1,"methodology")
 get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
                                      n.vars = 1,
                                      info = c("methodology","source","comment")) {
 
   
-  if (info=="methodology") 
+  if (info[1]=="methodology") 
     url <- paste("http://sophist.hse.ru/hse/1/met/",series.name,".html",sep="")
-  if (info=="source") 
+  if (info[1]=="source") 
     url <- paste("http://sophist.hse.ru/hse/1/sor/",series.name,".html",sep="")
-  if (info=="comment") 
+  if (info[1]=="comment") 
     url <- paste("http://sophist.hse.ru/hse/1/com/",series.name,".html",sep="")
   
   url.html <- getURL(url,.encoding="UTF-8")

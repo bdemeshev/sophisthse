@@ -12,4 +12,5 @@ Two more advanced usage examples:
 ```r
 wagez <- sophisthse("WAG_Y", output = "zoo")
 wgpd <- sophisthse(c("WAG_Y","GDPVA_Y"))
+wagez <- sophisthse(c("WAG_Y","GDPVA_Y"), output = "data.frame")
 ```

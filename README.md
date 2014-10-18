@@ -1,7 +1,12 @@
 sophisthse
 ==========
 
-R package to download data from sophist.hse.ru
+R package to download data from [sophist.hse.ru](sophist.hse.ru). The package `sophisthse` may be installed via:
+```r
+library("devtools")
+install_github("bdemeshev/sophisthse")
+```
+
 
 Basic usage example:
 ```r

@@ -4,6 +4,7 @@ sophisthse
 
 Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
 ```r
+install.packages("devtools")
 library("devtools")
 install_github("bdemeshev/sophisthse")
 ```
@@ -32,13 +33,14 @@ info
 Не очень срочные планы по развитию:
 * команда для получения списка всех рядов
 * убрать warning при скачивании рядов с пропущенными данными. Всё работает корректно, поэтому просто разобраться, где он возникает и убрать.
-* может наброситься на данные опросов?
+* может наброситься на разномастные таблицы? Данные опросов можно скачивать целиком без всяких пакетов после регистрации.
 
 ### English translation:
 
 
 R package to download data from [sophist.hse.ru](http://sophist.hse.ru/). The package `sophisthse` may be installed via:
 ```r
+install.packages("devtools")
 library("devtools")
 install_github("bdemeshev/sophisthse")
 ```

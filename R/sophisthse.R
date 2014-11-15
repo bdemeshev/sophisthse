@@ -174,7 +174,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame")
   
   req.type <- requested_freq(series.name)
   if (! req.type == t.type) 
-    warning("The requested frequency (",req.type,
+    warning("The guessed requested frequency (",req.type,
             ") does not match detected frequency (", t.type,")")
   
   # convert data to correct format
@@ -258,3 +258,23 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
   attr(all_data,"metadata") <- all_meta
   return(all_data)
 }
+
+
+#' Construct a vector of all the available tables
+#'
+#' Construct a vector of all the available tables
+#'
+#' Construct a vector of all the available tables. For the moment contains an error.
+#' BRDATA is a table of tables :) And also some regional data cannot be parsed.
+#'
+#' @return vector of all the available tables
+#' @examples
+#' sophisthse_tables()
+sophisthse_tables <- function(x) {
+  url <- "http://sophist.hse.ru/hse/nindex.shtml"
+  url_chr <- getURL(url)
+  x <- str_match_all(url_chr,"/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][,2]
+  return(x)
+}
+
+

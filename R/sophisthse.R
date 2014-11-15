@@ -3,7 +3,7 @@
 #' @name sophisthse
 #' @docType package
 #' @author Boris Demeshev 
-#' @import XML dplyr RCurl zoo
+#' @import XML dplyr RCurl zoo stringr
 NULL
 
 #' Remove slash junk
@@ -268,6 +268,7 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
 #' BRDATA is a table of tables :) And also some regional data cannot be parsed.
 #'
 #' @return vector of all the available tables
+#' @export
 #' @examples
 #' sophisthse_tables()
 sophisthse_tables <- function(x) {

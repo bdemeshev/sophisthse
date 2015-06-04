@@ -1,7 +1,7 @@
 Package: sophisthse
 Type: Package
 Title: Load Russian economic indicators from sophist.hse.ru.
-Version: 0.2
+Version: 0.4
 Date: 2013-10-18
 Author: Boris Demeshev
 Maintainer: Boris Demeshev <boris.demeshev@gmail.com>

@@ -9,7 +9,7 @@ Imports:
     XML,
     RCurl,
     zoo,
-    dplyr (>= 0.3),
+    dplyr (>= 0.2),
     stringr
 Description: Load Russian economic indicators from sophist.hse.ru.
 License: MIT

@@ -1,3 +1,10 @@
+sophisthse 0.5
+-----------
+
+* Code style cleanup
+* Add travis shield
+* Cyrillic encoding tested on macos and windows 10
+
 sophisthse 0.2
 -----------
 

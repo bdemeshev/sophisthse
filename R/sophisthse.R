@@ -88,8 +88,9 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 
   for (i in 1:min(n.on.site, n.vars)) {
     temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
-    if (length(temp.value) > 0)
+    if (length(temp.value) > 0) {
       text[i] <- temp.value  # avoid empty blocks
+    }
   }
 
   text <- remove_slash_junk(text)
@@ -141,6 +142,8 @@ requested_freq <- function(series.name) {
 sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
                                                             "data.frame")) {
 
+  output <- match.arg(output)
+
   # download main data
   url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
                ".htm", sep = "")
@@ -178,7 +181,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   df <- df[2:(nrow(df) - 4), ]
 
   # remove spaces, replace ',' by '.', convert to numeric
-  for (i in 2:ncol(df)) df[, i] <- rus2num(df[, i])
+  for (i in 2:ncol(df)) {
+    df[, i] <- rus2num(df[, i])
+  }
 
 
   # pretty time index
@@ -235,8 +240,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 
   metadata$freq <- t.type
 
-  if (output[1] == "zoo")
+  if (output == "zoo") {
     df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
+  }
 
   metadata <- metadata[!metadata$tsname == "T", ]
   attr(df, "metadata") <- metadata
@@ -260,6 +266,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #' df <- sophisthse('WAG_Y')
 sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
                                                            "data.frame")) {
+
+  output <- match.arg(output)
+
   req_type <- requested_freq(series.name)
   if (length(unique(req_type)) > 1)
     warning("Probably requested series have different frequency.")
@@ -275,7 +284,7 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
     all_data <- merge(all_data, one_data, by = "T", all = TRUE)
   }
 
-  if (output[1] == "zoo")
+  if (output == "zoo")
     all_data <- zoo::zoo(dplyr::select(all_data, -T), order.by = all_data$T,
                     frequency = unique(all_meta$freq))
 

@@ -1,8 +1,8 @@
 Package: sophisthse
 Type: Package
-Title: Load Russian economic indicators from sophist.hse.ru.
-Version: 0.4
-Date: 2013-10-18
+Title: Load Russian economic indicators from sophist.hse.ru
+Version: 0.5
+Date: 2016-01-29
 Author: Boris Demeshev
 Maintainer: Boris Demeshev <boris.demeshev@gmail.com>
 Imports:
@@ -12,5 +12,5 @@ Imports:
     dplyr (>= 0.2),
     stringr
 Description: Load Russian economic indicators from sophist.hse.ru.
-License: MIT
+License: GPL-3
 LazyData: true

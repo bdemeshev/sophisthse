@@ -3,7 +3,6 @@
 #' @name sophisthse
 #' @docType package
 #' @author Boris Demeshev
-#' @import XML dplyr RCurl zoo stringr
 NULL
 
 #' Remove slash junk
@@ -63,29 +62,32 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 
   info <- match.arg(info)
 
-  if (info == "methodology")
+  if (info == "methodology") {
     url <- paste("http://sophist.hse.ru/hse/1/met/", series.name,
                  ".html", sep = "")
-  if (info == "source")
+  }
+  if (info == "source") {
     url <- paste("http://sophist.hse.ru/hse/1/sor/", series.name,
                  ".html", sep = "")
-  if (info == "comment")
+  }
+  if (info == "comment") {
     url <- paste("http://sophist.hse.ru/hse/1/com/", series.name,
                  ".html", sep = "")
+  }
 
-  url.html <- getURL(url, .encoding = "UTF-8")
-  url.parsed <- htmlTreeParse(url.html)
-  url.root <- xmlRoot(url.parsed)
+  url.html <- RCurl::getURL(url, .encoding = "UTF-8")
+  url.parsed <- XML::htmlTreeParse(url.html)
+  url.root <- XML::xmlRoot(url.parsed)
 
 
   # there maybe 2 situations: one entry for each variable one
   # entry for all variables or more than 2 ;)
 
-  n.on.site <- length(xmlChildren(url.root[[3]][[3]]))%/%2  # only approximate
+  n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]]))%/%2  # only approximate
   text <- rep("", n.vars)
 
   for (i in 1:min(n.on.site, n.vars)) {
-    temp.value <- xmlValue(url.root[[3]][[3]][[2 * i]])
+    temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
     if (length(temp.value) > 0)
       text[i] <- temp.value  # avoid empty blocks
   }
@@ -142,19 +144,21 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   # download main data
   url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
                ".htm", sep = "")
-  url.html <- getURL(url, .encoding = "UTF-8")
+  url.html <- RCurl::getURL(url, .encoding = "UTF-8")
 
   # get main table
-  tables <- readHTMLTable(url.html)
+  tables <- XML::readHTMLTable(url.html)
   df <- tables[[1]]
 
   # html parse
-  url.parsed <- htmlTreeParse(url.html)
-  url.root <- xmlRoot(url.parsed)
+  url.parsed <- XML::htmlTreeParse(url.html)
+  url.root <- XML::xmlRoot(url.parsed)
 
 
   # all to character
-  for (i in 1:ncol(df)) df[, i] <- as.character(df[, i])
+  for (i in 1:ncol(df)) {
+    df[, i] <- as.character(df[, i])
+  }
 
   # save units of measure
   metadata <- dplyr::data_frame(tsname = colnames(df))
@@ -163,8 +167,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 
   # get full variable names
   full.names <- rep("", ncol(df))
-  for (i in 2:ncol(df)) full.names[i] <- xmlValue(url.root[[3]][[1]][[1]][[i -
-                                                                             1]])
+  for (i in 2:ncol(df)) {
+    full.names[i] <- XML::xmlValue(url.root[[3]][[1]][[1]][[i - 1]])
+  }
   metadata$fullname <- remove_slash_junk(full.names)
   Encoding(metadata$fullname) <- "UTF-8"
 
@@ -180,23 +185,26 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 
   # determine the type of data: yearly/quarterly/mothly
   t.type <- 1  # by default we assume early data
-  if (length(grep("[IV]", df$T)) > 1)
+  if (length(grep("[IV]", df$T)) > 1) {
     t.type <- 4  # quarterly data
-  if (length(grep("^[23456789]$", df$T)) > 1)
+  }
+  if (length(grep("^[23456789]$", df$T)) > 1) {
     t.type <- 12  # monthly data
+  }
 
   req.type <- requested_freq(series.name)
-  if (!req.type == t.type)
+  if (!req.type == t.type) {
     warning("The guessed requested frequency (", req.type,
             ") does not match detected frequency (", t.type,
             ")")
+  }
 
   # convert data to correct format
   if (t.type == 1)
     df$T <- as.numeric(df$T)
   if (t.type == 12) {
     # we assume that the first observation has the year
-    start.date <- as.yearmon(df$T[1], format = "%Y %m")
+    start.date <- zoo::as.yearmon(df$T[1], format = "%Y %m")
     df$T <- start.date + seq(from = 0, by = 1/12, length = nrow(df))
   }
   if (t.type == 4) {
@@ -206,7 +214,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
     df$T <- gsub(" II$", "-2", df$T)
     df$T <- gsub(" I$", "-1", df$T)
 
-    start.date <- as.yearqtr(df$T[1])
+    start.date <- zoo::as.yearqtr(df$T[1])
     df$T <- start.date + seq(from = 0, by = 1/4, length = nrow(df))
   }
 
@@ -228,9 +236,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   metadata$freq <- t.type
 
   if (output[1] == "zoo")
-    df <- zoo(select(df, -T), order.by = df$T, frequency = t.type)
+    df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
 
-  metadata <- filter(metadata, !tsname == "T")
+  metadata <- dplyr::filter(metadata, !tsname == "T")
   attr(df, "metadata") <- metadata
 
   return(df)
@@ -263,12 +271,12 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
   for (sname in series.name) {
     one_data <- sophisthse0(sname, output = "data.frame")
     one_meta <- attr(one_data, "metadata")
-    all_meta <- rbind_list(all_meta, one_meta)
+    all_meta <- dplyr::rbind_list(all_meta, one_meta)
     all_data <- merge(all_data, one_data, by = "T", all = TRUE)
   }
 
   if (output[1] == "zoo")
-    all_data <- zoo(select(all_data, -T), order.by = all_data$T,
+    all_data <- zoo::zoo(dplyr::select(all_data, -T), order.by = all_data$T,
                     frequency = unique(all_meta$freq))
 
   attr(all_data, "metadata") <- all_meta
@@ -291,9 +299,9 @@ sophisthse_tables <- function() {
   message("The output is not complete. BRDATA is a table of tables.")
   message("Some regional data cannot be parsed.")
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
-  url_chr <- getURL(url)
-  x <- str_match_all(url_chr, "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][,
-                                                                       2]
+  url_chr <- RCurl::getURL(url)
+  x <- stringr::str_match_all(url_chr,
+              "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][, 2]
   return(x)
 }
 

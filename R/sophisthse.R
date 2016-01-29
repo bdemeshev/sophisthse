@@ -90,7 +90,7 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   }
 
   text <- remove_slash_junk(text)
-  text <- as.vector(text) # what is it???
+  text <- as.character(text)
   Encoding(text) <- "UTF-8"
 
   return(text)
@@ -156,11 +156,14 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame")
   # save units of measure
   metadata <- dplyr::data_frame(tsname = colnames(df))
   metadata$unit <- gsub("&nbsp","",df[1,])
+  Encoding(metadata$unit) <- "UTF-8"
 
   # get full variable names
   full.names <- rep("",ncol(df))
   for (i in 2:ncol(df)) full.names[i] <- xmlValue(url.root[[3]][[1]][[1]][[i-1]])
   metadata$fullname <- remove_slash_junk(full.names)
+  Encoding(metadata$fullname) <- "UTF-8"
+
 
   # remove unused lines (units, info about series)
   df <- df[2:(nrow(df)-4),]

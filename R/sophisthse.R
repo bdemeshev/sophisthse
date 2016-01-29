@@ -238,7 +238,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   if (output[1] == "zoo")
     df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
 
-  metadata <- dplyr::filter(metadata, !tsname == "T")
+  metadata <- metadata[metadata$tsname == "T", ]
   attr(df, "metadata") <- metadata
 
   return(df)

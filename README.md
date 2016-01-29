@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/bdemeshev/sophisthse.svg?branch=master)](https://travis-ci.org/bdemeshev/sophisthse)
+
 sophisthse
 ==========
 

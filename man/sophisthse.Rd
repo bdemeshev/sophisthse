@@ -9,7 +9,7 @@
 sophisthse(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
 }
 \arguments{
-\item{series.name}{the names of the time series, i.e. "WAG_Y"}
+\item{series.name}{the names of the time series, i.e. 'WAG_Y'}
 
 \item{output}{the desired output format, either 'zoo' or 'data.frame'}
 }
@@ -22,12 +22,12 @@ sophisthse
 This function obtains multivariate time series from sophist.hse.ru
 }
 \details{
-The output may be choosen to be "zoo" or "data.frame". Metadata is saved
-into the attribute "metadata".
+The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+into the attribute 'metadata'.
 }
 \examples{
-df <- sophisthse("IP_EA_Q")
-df <- sophisthse("WAG_Y")
+df <- sophisthse('IP_EA_Q')
+df <- sophisthse('WAG_Y')
 }
 \author{
 Boris Demeshev

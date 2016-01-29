@@ -20,6 +20,6 @@ Guess series frequency from it's name
 by checking presence of letters Y, M, Q
 }
 \examples{
-requested_freq("WAG_Y")
+sophisthse:::requested_freq('WAG_Y')
 }
 

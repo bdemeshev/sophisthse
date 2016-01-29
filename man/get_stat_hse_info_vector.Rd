@@ -22,9 +22,9 @@ Obtain additional information for specific time series from sophist.hse.ru
 }
 \details{
 Internal function. Obtain additional information for specific time series
-from sophist.hse.ru. Either "methodology", "source" or "comment".
+from sophist.hse.ru. Either 'methodology', 'source' or 'comment'.
 }
 \examples{
-info <- get_stat_hse_info_vector("IP_EA_Q", 1,"methodology")
+info <- sophisthse:::get_stat_hse_info_vector('IP_EA_Q', 1,'methodology')
 }
 

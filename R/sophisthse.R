@@ -80,8 +80,10 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   url.root <- XML::xmlRoot(url.parsed)
 
 
-  # there maybe 2 situations: one entry for each variable one
-  # entry for all variables or more than 2 ;)
+  # there maybe 2 situations:
+  # one entry for each variable
+  # one entry for all variables
+  # or more than 2 ;)
 
   n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]]))%/%2  # only approximate
   text <- rep("", n.vars)

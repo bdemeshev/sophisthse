@@ -90,7 +90,7 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   }
 
   text <- remove_slash_junk(text)
-  text <- as.character(text)
+  text <- as.vector(text) # what is it???
   Encoding(text) <- "UTF-8"
 
   return(text)

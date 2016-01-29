@@ -4,7 +4,7 @@
 \alias{sophisthse_tables}
 \title{Construct a vector of all the available tables}
 \usage{
-sophisthse_tables(x)
+sophisthse_tables()
 }
 \value{
 vector of all the available tables

@@ -279,7 +279,9 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo", "data.frame"))
 #' @export
 #' @examples
 #' sophisthse_tables()
-sophisthse_tables <- function(x) {
+sophisthse_tables <- function() {
+  message("The output is not complete. BRDATA is a table of tables.")
+  message("Some regional data cannot be parsed.")
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
   url_chr <- getURL(url)
   x <- str_match_all(url_chr,"/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][,2]

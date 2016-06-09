@@ -54,11 +54,13 @@ rus2num <- function(x) {
 #' @param series.name the names of the time series
 #' @param n.vars number of variables
 #' @param info type of information (methodology/source/comment)
+#' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return character vector with info for each variable
 #' @examples
-#' info <- sophisthse:::get_stat_hse_info_vector('IP_EA_Q', 1,'methodology')
+#' info <- sophisthse:::get_stat_hse_info_vector('IP_EA_Q', 1, 'methodology')
 get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
-                                     n.vars = 1, info = c("methodology", "source", "comment")) {
+                                     n.vars = 1, info = c("methodology", "source", "comment"),
+                                     ...) {
 
   info <- match.arg(info)
 
@@ -75,7 +77,7 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
                  ".html", sep = "")
   }
 
-  url.html <- RCurl::getURL(url, .encoding = "UTF-8")
+  url.html <- RCurl::getURL(url, .encoding = "UTF-8", ...)
   url.parsed <- XML::htmlTreeParse(url.html)
   url.root <- XML::xmlRoot(url.parsed)
 
@@ -136,20 +138,21 @@ requested_freq <- function(series.name) {
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
 #' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
 #' @examples
 #' df <- sophisthse0('IP_EA_Q')
 #' df <- sophisthse0('WAG_Y')
 sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
-                                                            "data.frame")) {
+                                                            "data.frame"), ...) {
 
   output <- match.arg(output)
 
   # download main data
   url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
                ".htm", sep = "")
-  url.html <- RCurl::getURL(url, .encoding = "UTF-8")
+  url.html <- RCurl::getURL(url, .encoding = "UTF-8", ...)
 
   # get main table
   tables <- XML::readHTMLTable(url.html)
@@ -234,11 +237,11 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   n.vars <- ncol(df) - 1  # remove 'T', the name of index
 
   metadata$methodology <- c("", get_stat_hse_info_vector(series.name,
-                                                         n.vars, "methodology"))
+                                                         n.vars, "methodology", ...))
   metadata$source <- c("", get_stat_hse_info_vector(series.name,
-                                                    n.vars, "source"))
+                                                    n.vars, "source"), ...)
   metadata$comment <- c("", get_stat_hse_info_vector(series.name,
-                                                     n.vars, "comment"))
+                                                     n.vars, "comment"), ...)
 
   metadata$freq <- t.type
 
@@ -261,13 +264,14 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
 #' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
 #' @examples
 #' df <- sophisthse('IP_EA_Q')
 #' df <- sophisthse('WAG_Y')
-sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
-                                                           "data.frame")) {
+sophisthse <- function(series.name = "IP_EA_Q",
+                       output = c("zoo", "data.frame"), ...) {
 
   output <- match.arg(output)
 
@@ -275,12 +279,12 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
   if (length(unique(req_type)) > 1)
     warning("Probably requested series have different frequency.")
 
-  all_data <- sophisthse0(series.name[1], output = "data.frame")
+  all_data <- sophisthse0(series.name[1], output = "data.frame", ...)
   all_meta <- attr(all_data, "metadata")
   series.name <- series.name[-1]
 
   for (sname in series.name) {
-    one_data <- sophisthse0(sname, output = "data.frame")
+    one_data <- sophisthse0(sname, output = "data.frame", ...)
     one_meta <- attr(one_data, "metadata")
     all_meta <- dplyr::rbind_list(all_meta, one_meta)
     all_data <- merge(all_data, one_data, by = "T", all = TRUE)
@@ -302,15 +306,16 @@ sophisthse <- function(series.name = "IP_EA_Q", output = c("zoo",
 #' Construct a vector of all the available tables. For the moment contains an error.
 #' BRDATA is a table of tables :) And also some regional data cannot be parsed.
 #'
+#' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return vector of all the available tables
 #' @export
 #' @examples
 #' sophisthse_tables()
-sophisthse_tables <- function() {
+sophisthse_tables <- function(...) {
   message("The output is not complete. BRDATA is a table of tables.")
   message("Some regional data cannot be parsed.")
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
-  url_chr <- RCurl::getURL(url)
+  url_chr <- RCurl::getURL(url, ...)
   x <- stringr::str_match_all(url_chr,
               "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][, 2]
   return(x)

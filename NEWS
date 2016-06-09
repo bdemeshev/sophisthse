@@ -1,3 +1,8 @@
+sophisthse 0.6
+-----------
+
+* Options ... passed to getURL. This allows the use of proxy server.
+
 sophisthse 0.5
 -----------
 

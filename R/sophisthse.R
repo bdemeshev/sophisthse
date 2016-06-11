@@ -210,12 +210,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   }
 
   # convert data to correct format
-  if (t.type == 1)
+  if (t.type == 1) {
     df$T <- as.numeric(df$T)
-  if (t.type == 12) {
-    # we assume that the first observation has the year
-    start.date <- zoo::as.yearmon(df$T[1], format = "%Y %m")
-    df$T <- start.date + seq(from = 0, by = 1/12, length = nrow(df))
+    start.date <- df$T[1]
   }
   if (t.type == 4) {
     # we assume that the first observation has the year
@@ -227,6 +224,12 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
     start.date <- zoo::as.yearqtr(df$T[1])
     df$T <- start.date + seq(from = 0, by = 1/4, length = nrow(df))
   }
+  if (t.type == 12) {
+    # we assume that the first observation has the year
+    start.date <- zoo::as.yearmon(df$T[1], format = "%Y %m")
+    df$T <- start.date + seq(from = 0, by = 1/12, length = nrow(df))
+  }
+
 
 
 
@@ -247,6 +250,17 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 
   if (output == "zoo") {
     df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
+  }
+  if (output == "ts") {
+    if (t.type == 1) {
+      start_ts <- start.date # start option for ts object
+    }
+    if (t.type > 1) { # quarter or monthly
+      start_numeric <- as.numeric(start.date)
+      small_unit <- round(t.type * (start_numeric %% 1) + 1)
+      start_ts <- c(floor(start_numeric), small_unit)
+    }
+    df <- ts(dplyr::select(df, -T), start = start_ts, frequency = t.type)
   }
 
   metadata <- metadata[!metadata$tsname == "T", ]

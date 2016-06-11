@@ -133,19 +133,19 @@ requested_freq <- function(series.name) {
 #'
 #' This function obtains univariate time series from sophist.hse.ru
 #'
-#' The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+#' The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @param output the desired output format, either 'ts', 'zoo' or 'data.frame'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
 #' @examples
 #' df <- sophisthse0('IP_EA_Q')
 #' df <- sophisthse0('WAG_Y')
-sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
-                                                            "data.frame"), ...) {
+sophisthse0 <- function(series.name = "IP_EA_Q",
+                        output = c("ts", "zoo", "data.frame"), ...) {
 
   output <- match.arg(output)
 
@@ -273,11 +273,11 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #'
 #' This function obtains multivariate time series from sophist.hse.ru
 #'
-#' The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+#' The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @param output the desired output format, either 'ts', 'zoo' or 'data.frame'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
@@ -285,7 +285,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #' df <- sophisthse('IP_EA_Q')
 #' df <- sophisthse('WAG_Y')
 sophisthse <- function(series.name = "IP_EA_Q",
-                       output = c("zoo", "data.frame"), ...) {
+                       output = c("ts", "zoo", "data.frame"), ...) {
 
   output <- match.arg(output)
 

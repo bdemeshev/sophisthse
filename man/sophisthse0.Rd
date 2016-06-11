@@ -4,12 +4,13 @@
 \alias{sophisthse0}
 \title{Obtain time series from sophist.hse.ru}
 \usage{
-sophisthse0(series.name = "IP_EA_Q", output = c("zoo", "data.frame"), ...)
+sophisthse0(series.name = "IP_EA_Q", output = c("ts", "zoo", "data.frame"),
+  ...)
 }
 \arguments{
 \item{series.name}{the names of the time series, i.e. 'WAG_Y'}
 
-\item{output}{the desired output format, either 'zoo' or 'data.frame'}
+\item{output}{the desired output format, either 'ts', 'zoo' or 'data.frame'}
 
 \item{...}{further arguments passed into getURL. One may use them to work with proxy.}
 }
@@ -20,7 +21,7 @@ data.frame with the corresponding time series
 This function obtains univariate time series from sophist.hse.ru
 }
 \details{
-The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
 into the attribute 'metadata'.
 }
 \examples{

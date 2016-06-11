@@ -137,17 +137,13 @@ requested_freq <- function(series.name) {
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'ts', 'zoo' or 'data.frame'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
 #' @examples
 #' df <- sophisthse0('IP_EA_Q')
 #' df <- sophisthse0('WAG_Y')
-sophisthse0 <- function(series.name = "IP_EA_Q",
-                        output = c("ts", "zoo", "data.frame"), ...) {
-
-  output <- match.arg(output)
+sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 
   # download main data
   url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
@@ -248,20 +244,6 @@ sophisthse0 <- function(series.name = "IP_EA_Q",
 
   metadata$freq <- t.type
 
-  if (output == "zoo") {
-    df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
-  }
-  if (output == "ts") {
-    if (t.type == 1) {
-      start_ts <- start.date # start option for ts object
-    }
-    if (t.type > 1) { # quarter or monthly
-      start_numeric <- as.numeric(start.date)
-      small_unit <- round(t.type * (start_numeric %% 1) + 1)
-      start_ts <- c(floor(start_numeric), small_unit)
-    }
-    df <- ts(dplyr::select(df, -T), start = start_ts, frequency = t.type)
-  }
 
   metadata <- metadata[!metadata$tsname == "T", ]
   attr(df, "metadata") <- metadata
@@ -290,23 +272,44 @@ sophisthse <- function(series.name = "IP_EA_Q",
   output <- match.arg(output)
 
   req_type <- requested_freq(series.name)
-  if (length(unique(req_type)) > 1)
+  if (length(unique(req_type)) > 1) {
     warning("Probably requested series have different frequency.")
+  }
 
-  all_data <- sophisthse0(series.name[1], output = "data.frame", ...)
+  all_data <- sophisthse0(series.name[1], ...)
   all_meta <- attr(all_data, "metadata")
   series.name <- series.name[-1]
 
   for (sname in series.name) {
-    one_data <- sophisthse0(sname, output = "data.frame", ...)
+    one_data <- sophisthse0(sname, ...)
     one_meta <- attr(one_data, "metadata")
     all_meta <- dplyr::rbind_list(all_meta, one_meta)
     all_data <- merge(all_data, one_data, by = "T", all = TRUE)
   }
 
-  if (output == "zoo")
+  actual_frequency <- unique(all_meta$freq)
+
+  if (length(actual_frequency) > 1) {
+    warning("Probably requested series have different frequency: ",
+            paste0(actual_frequency, " "))
+  }
+
+
+  if (output == "zoo") {
     all_data <- zoo::zoo(dplyr::select(all_data, -T), order.by = all_data$T,
-                    frequency = unique(all_meta$freq))
+                    frequency = actual_frequency)
+  }
+  if (output == "ts") {
+
+    start_numeric <- as.numeric(all_data$T)
+    start_year <- floor(start_numeric)
+    start_small_unit <- 1 + round(actual_frequency * (start_numeric - start_year))
+    start_ts <- c(start_year, start_small_unit)
+
+    all_data <- ts(dplyr::select(all_data, -T), start = start_ts,
+                   frequency = actual_frequency)
+  }
+
 
   attr(all_data, "metadata") <- all_meta
   return(all_data)

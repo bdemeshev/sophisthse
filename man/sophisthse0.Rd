@@ -4,13 +4,10 @@
 \alias{sophisthse0}
 \title{Obtain time series from sophist.hse.ru}
 \usage{
-sophisthse0(series.name = "IP_EA_Q", output = c("ts", "zoo", "data.frame"),
-  ...)
+sophisthse0(series.name = "IP_EA_Q", ...)
 }
 \arguments{
 \item{series.name}{the names of the time series, i.e. 'WAG_Y'}
-
-\item{output}{the desired output format, either 'ts', 'zoo' or 'data.frame'}
 
 \item{...}{further arguments passed into getURL. One may use them to work with proxy.}
 }

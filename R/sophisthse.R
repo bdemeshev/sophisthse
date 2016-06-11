@@ -301,7 +301,7 @@ sophisthse <- function(series.name = "IP_EA_Q",
   }
   if (output == "ts") {
 
-    start_numeric <- as.numeric(all_data$T)
+    start_numeric <- as.numeric(all_data$T[1])
     start_year <- floor(start_numeric)
     start_small_unit <- 1 + round(actual_frequency * (start_numeric - start_year))
     start_ts <- c(start_year, start_small_unit)

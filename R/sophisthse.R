@@ -296,7 +296,8 @@ sophisthse <- function(series.name = "IP_EA_Q",
 
 
   if (output == "zoo") {
-    all_data <- zoo::zoo(dplyr::select(all_data, -T), order.by = all_data$T,
+    all_data <- zoo::zoo(dplyr::select(all_data, -T),
+                         order.by = all_data$T,
                     frequency = actual_frequency)
   }
   if (output == "ts") {
@@ -307,7 +308,8 @@ sophisthse <- function(series.name = "IP_EA_Q",
     start_ts <- c(start_year, start_small_unit)
 
     all_data <- ts(dplyr::select(all_data, -T), start = start_ts,
-                   frequency = actual_frequency)
+                   frequency = actual_frequency,
+                   names = all_meta$tsname)
   }
 
 

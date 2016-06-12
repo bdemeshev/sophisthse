@@ -294,7 +294,8 @@ sophisthse <- function(series.name = "IP_EA_Q",
             paste0(actual_frequency, " "))
   }
 
-  all_data <- set_variable_labels(all_data, labels = all_meta$fullname)
+  all_data <- set_variable_labels(all_data,
+                labels = c("Date", all_meta$fullname))
 
   if (output == "zoo") {
     all_data <- zoo::zoo(dplyr::select(all_data, -T),

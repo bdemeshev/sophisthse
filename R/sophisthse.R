@@ -294,6 +294,7 @@ sophisthse <- function(series.name = "IP_EA_Q",
             paste0(actual_frequency, " "))
   }
 
+  all_data <- set_variable_labels(all_data, labels = all_meta$fullname)
 
   if (output == "zoo") {
     all_data <- zoo::zoo(dplyr::select(all_data, -T),
@@ -340,4 +341,30 @@ sophisthse_tables <- function(...) {
   return(x)
 }
 
+#' Set variable labels of a data.frame
+#'
+#' Set variable labels of a data.frame
+#'
+#' Set variable labels of a data.frame. They will be nicely visible
+#' with `View()` in Rstudio.
+#'
+#' @param df data.frame
+#' @param labels character vector of variable names
+#' @return data.frame with labelled variables
+#' @export
+#' @examples
+#' cars2 <- set_variable_labels(cars,
+#'   labels = c("Speed (mph)", "Stopping distance (ft)"))
+set_variable_labels <- function(df, labels) {
+  if (!length(colnames(df) == length(labels))) {
+    warning("The number of columns in df,", length(colnames(df)),
+      ", is not equal to the number of labels, ", length(labels), ".")
+  }
+
+  for (col_no in 1:length(colnames(df))) {
+    attr(df[[col_no]], "label") <- labels[col_no]
+  }
+
+  return(df)
+}
 

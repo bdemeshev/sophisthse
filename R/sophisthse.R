@@ -133,21 +133,17 @@ requested_freq <- function(series.name) {
 #'
 #' This function obtains univariate time series from sophist.hse.ru
 #'
-#' The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+#' The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'zoo' or 'data.frame'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
 #' @examples
 #' df <- sophisthse0('IP_EA_Q')
 #' df <- sophisthse0('WAG_Y')
-sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
-                                                            "data.frame"), ...) {
-
-  output <- match.arg(output)
+sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 
   # download main data
   url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
@@ -210,12 +206,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
   }
 
   # convert data to correct format
-  if (t.type == 1)
+  if (t.type == 1) {
     df$T <- as.numeric(df$T)
-  if (t.type == 12) {
-    # we assume that the first observation has the year
-    start.date <- zoo::as.yearmon(df$T[1], format = "%Y %m")
-    df$T <- start.date + seq(from = 0, by = 1/12, length = nrow(df))
+    start.date <- df$T[1]
   }
   if (t.type == 4) {
     # we assume that the first observation has the year
@@ -227,6 +220,12 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
     start.date <- zoo::as.yearqtr(df$T[1])
     df$T <- start.date + seq(from = 0, by = 1/4, length = nrow(df))
   }
+  if (t.type == 12) {
+    # we assume that the first observation has the year
+    start.date <- zoo::as.yearmon(df$T[1], format = "%Y %m")
+    df$T <- start.date + seq(from = 0, by = 1/12, length = nrow(df))
+  }
+
 
 
 
@@ -245,9 +244,6 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 
   metadata$freq <- t.type
 
-  if (output == "zoo") {
-    df <- zoo::zoo(dplyr::select(df, -T), order.by = df$T, frequency = t.type)
-  }
 
   metadata <- metadata[!metadata$tsname == "T", ]
   attr(df, "metadata") <- metadata
@@ -259,11 +255,11 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #'
 #' This function obtains multivariate time series from sophist.hse.ru
 #'
-#' The output may be choosen to be 'zoo' or 'data.frame'. Metadata is saved
+#' The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'zoo' or 'data.frame'
+#' @param output the desired output format, either 'ts', 'zoo' or 'data.frame'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
@@ -271,28 +267,53 @@ sophisthse0 <- function(series.name = "IP_EA_Q", output = c("zoo",
 #' df <- sophisthse('IP_EA_Q')
 #' df <- sophisthse('WAG_Y')
 sophisthse <- function(series.name = "IP_EA_Q",
-                       output = c("zoo", "data.frame"), ...) {
+                       output = c("ts", "zoo", "data.frame"), ...) {
 
   output <- match.arg(output)
 
   req_type <- requested_freq(series.name)
-  if (length(unique(req_type)) > 1)
+  if (length(unique(req_type)) > 1) {
     warning("Probably requested series have different frequency.")
+  }
 
-  all_data <- sophisthse0(series.name[1], output = "data.frame", ...)
+  all_data <- sophisthse0(series.name[1], ...)
   all_meta <- attr(all_data, "metadata")
   series.name <- series.name[-1]
 
   for (sname in series.name) {
-    one_data <- sophisthse0(sname, output = "data.frame", ...)
+    one_data <- sophisthse0(sname, ...)
     one_meta <- attr(one_data, "metadata")
     all_meta <- dplyr::rbind_list(all_meta, one_meta)
     all_data <- merge(all_data, one_data, by = "T", all = TRUE)
   }
 
-  if (output == "zoo")
-    all_data <- zoo::zoo(dplyr::select(all_data, -T), order.by = all_data$T,
-                    frequency = unique(all_meta$freq))
+  actual_frequency <- unique(all_meta$freq)
+
+  if (length(actual_frequency) > 1) {
+    warning("Probably requested series have different frequency: ",
+            paste0(actual_frequency, " "))
+  }
+
+  all_data <- set_variable_labels(all_data,
+                labels = c("Date", all_meta$fullname))
+
+  if (output == "zoo") {
+    all_data <- zoo::zoo(dplyr::select(all_data, -T),
+                         order.by = all_data$T,
+                    frequency = actual_frequency)
+  }
+  if (output == "ts") {
+
+    start_numeric <- as.numeric(all_data$T[1])
+    start_year <- floor(start_numeric)
+    start_small_unit <- 1 + round(actual_frequency * (start_numeric - start_year))
+    start_ts <- c(start_year, start_small_unit)
+
+    all_data <- ts(dplyr::select(all_data, -T), start = start_ts,
+                   frequency = actual_frequency,
+                   names = all_meta$tsname)
+  }
+
 
   attr(all_data, "metadata") <- all_meta
   return(all_data)
@@ -321,4 +342,30 @@ sophisthse_tables <- function(...) {
   return(x)
 }
 
+#' Set variable labels of a data.frame
+#'
+#' Set variable labels of a data.frame
+#'
+#' Set variable labels of a data.frame. They will be nicely visible
+#' with `View()` in Rstudio.
+#'
+#' @param df data.frame
+#' @param labels character vector of variable names
+#' @return data.frame with labelled variables
+#' @export
+#' @examples
+#' cars2 <- set_variable_labels(cars,
+#'   labels = c("Speed (mph)", "Stopping distance (ft)"))
+set_variable_labels <- function(df, labels) {
+  if (!length(colnames(df) == length(labels))) {
+    warning("The number of columns in df,", length(colnames(df)),
+      ", is not equal to the number of labels, ", length(labels), ".")
+  }
+
+  for (col_no in 1:length(colnames(df))) {
+    attr(df[[col_no]], "label") <- labels[col_no]
+  }
+
+  return(df)
+}
 

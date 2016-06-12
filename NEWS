@@ -1,3 +1,10 @@
+sophisthse 0.62
+-----------
+
+* Output 'ts' option is new and the default one. Now plots from 'forecast' package have correct timeline.
+* Output 'data.frame' now assigns variable labels and they are nicely visible with 'View()' in Rstudio.
+
+
 sophisthse 0.6
 -----------
 

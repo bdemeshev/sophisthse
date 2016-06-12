@@ -36,7 +36,8 @@ remove_slash_junk <- function(x) {
 #' rus2num('34 345,34')
 rus2num <- function(x) {
   x <- gsub(",", ".", x)
-  x <- gsub(" ", "", x)
+  # remove all but 0-9, . and minus:
+  x <- gsub("[^0-9.-]+", "", x)
   return(as.numeric(x))
 }
 

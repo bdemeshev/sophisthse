@@ -249,15 +249,27 @@ sophisthse <- function(series.name = "IP_EA_Q",
 
   output <- match.arg(output)
 
-  all_data <- sophisthse0(series.name[1], ...)
-  all_meta <- attr(all_data, "metadata")
-  series.name <- series.name[-1]
+  all_data <- NULL
+  all_meta <- NULL
 
   for (sname in series.name) {
     one_data <- sophisthse0(sname, ...)
+
+    if (length(unique(colnames(one_data))) < ncol(one_data)) {
+      warning("Non unique colnames: ", colnames(one_data))
+      warning("Adding numbers to them :)")
+      colnames(one_data)[2:ncol(one_data)] <-
+        paste0(colnames(one_data)[2:ncol(one_data)], "_", 1:(ncol(one_data) - 1))
+    }
+
     one_meta <- attr(one_data, "metadata")
     all_meta <- dplyr::rbind_list(all_meta, one_meta)
-    all_data <- merge(all_data, one_data, by = "T", all = TRUE)
+
+    if (is.null(all_data)) {
+      all_data <- one_data
+    } else {
+      all_data <- merge(all_data, one_data, by = "T", all = TRUE)
+    }
   }
 
   actual_frequency <- unique(all_meta$freq)

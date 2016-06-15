@@ -32,7 +32,7 @@ info <- attr(df, "metadata")
 info
 ```
 
-Встроенную таблицу рядов удобно глянуть в Rstudio:
+Полный список рядов доступных для скачивания удобно глянуть в Rstudio:
 ```r
 View(series_info)
 ```
@@ -93,7 +93,7 @@ info <- attr(df, "metadata")
 info
 ```
 
-Built-in information about time series maybe nicely viewed in Rstudio:
+Built-in information about time series available for download maybe nicely viewed in Rstudio:
 ```r
 View(series_info)
 ```

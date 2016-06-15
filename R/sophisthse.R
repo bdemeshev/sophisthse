@@ -86,21 +86,28 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   # there maybe 2 situations:
   # one entry for each variable
   # one entry for all variables
-  # or more than 2 ;)
+  # or more than 2 situations ;)
 
-  n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]]))%/%2  # only approximate
-  text <- rep("", n.vars)
+  if (length(XML::xmlChildren(url.root)) > 3) {
+    # series CNSTR_Y, CNSTR_Q, CNSTR_M, GOV_M
+    # have no methodology
 
-  for (i in 1:min(n.on.site, n.vars)) {
-    temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
-    if (length(temp.value) > 0) {
-      text[i] <- temp.value  # avoid empty blocks
+    n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]])) %/% 2  # only approximate
+    text <- rep("", n.vars)
+
+    for (i in 1:min(n.on.site, n.vars)) {
+      temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
+      if (length(temp.value) > 0) {
+        text[i] <- temp.value  # avoid empty blocks
+      }
     }
-  }
 
-  text <- remove_slash_junk(text)
-  text <- as.character(text)
-  Encoding(text) <- "UTF-8"
+    text <- remove_slash_junk(text)
+    text <- as.character(text)
+    Encoding(text) <- "UTF-8"
+  } else {
+    text <- rep(paste0("Failed to parse ", url), n.vars)
+  }
 
   return(text)
 }
@@ -334,12 +341,22 @@ sophisthse <- function(series.name = "IP_EA_Q",
 #' @examples
 #' sophisthse_tables()
 sophisthse_tables <- function(...) {
-  message("The output is not complete. BRDATA is a table of tables.")
-  message("Some regional data cannot be parsed.")
+  message("Some table names may not work.")
+  message("On June 2016: MPP2 and TOPL_C do not work.")
+
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
   url_chr <- RCurl::getURL(url, ...)
   x <- stringr::str_match_all(url_chr,
               "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][, 2]
+  x <- x[!x == "BRDATA"]
+
+  # no need to parse BRDATA page, /exes/tables/BRDATA.htm
+  # all time series there have direct links from /hse/nindex.shtm
+
+  # remove regional data
+  x <- x[!stringr::str_detect(x, "^R200")]
+
+
   return(x)
 }
 

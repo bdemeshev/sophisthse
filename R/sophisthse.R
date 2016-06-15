@@ -36,8 +36,14 @@ remove_slash_junk <- function(x) {
 #' rus2num('34 345,34')
 rus2num <- function(x) {
   x <- gsub(",", ".", x)
+
   # remove all but 0-9, . and minus:
   x <- gsub("[^0-9.-]+", "", x)
+
+  # remove lonely minus or lonely dot
+  x <- gsub("^-$", "", x)
+  x <- gsub("^\\.$", "", x)
+
   return(as.numeric(x))
 }
 
@@ -86,47 +92,31 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   # there maybe 2 situations:
   # one entry for each variable
   # one entry for all variables
-  # or more than 2 ;)
+  # or more than 2 situations ;)
 
-  n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]]))%/%2  # only approximate
-  text <- rep("", n.vars)
+  if (length(XML::xmlChildren(url.root)) > 3) {
+    # series CNSTR_Y, CNSTR_Q, CNSTR_M, GOV_M
+    # have no methodology
 
-  for (i in 1:min(n.on.site, n.vars)) {
-    temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
-    if (length(temp.value) > 0) {
-      text[i] <- temp.value  # avoid empty blocks
+    n.on.site <- length(XML::xmlChildren(url.root[[3]][[3]])) %/% 2  # only approximate
+    text <- rep("", n.vars)
+
+    for (i in 1:min(n.on.site, n.vars)) {
+      temp.value <- XML::xmlValue(url.root[[3]][[3]][[2 * i]])
+      if (length(temp.value) > 0) {
+        text[i] <- temp.value  # avoid empty blocks
+      }
     }
-  }
 
-  text <- remove_slash_junk(text)
-  text <- as.character(text)
-  Encoding(text) <- "UTF-8"
+    text <- remove_slash_junk(text)
+    text <- as.character(text)
+    Encoding(text) <- "UTF-8"
+  } else {
+    text <- rep(paste0("Failed to parse ", url), n.vars)
+  }
 
   return(text)
 }
-
-
-
-#' Guess series frequency from it's name
-#'
-#' Guess series frequency from it's name for sophist.hse.ru
-#'
-#' Guess series frequency from it's name
-#' by checking presence of letters Y, M, Q
-#'
-#' @param series.name the name of a time series
-#' @return guessed frequency (1/4/12)
-#' @examples
-#' sophisthse:::requested_freq('WAG_Y')
-requested_freq <- function(series.name) {
-  req_type <- rep(1, length(series.name))  # we assume yearly ts by default
-  req_type[grepl("_Y$|_Y_", series.name)] <- 1
-  req_type[grepl("_M$|_M_", series.name)] <- 12
-  req_type[grepl("_Q$|_Q_", series.name)] <- 4
-  return(req_type)
-}
-
-
 
 
 
@@ -199,13 +189,6 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
     t.type <- 12  # monthly data
   }
 
-  req.type <- requested_freq(series.name)
-  if (!req.type == t.type) {
-    warning("The guessed requested frequency (", req.type,
-            ") does not match detected frequency (", t.type,
-            ")")
-  }
-
   # convert data to correct format
   if (t.type == 1) {
     df$T <- as.numeric(df$T)
@@ -272,20 +255,27 @@ sophisthse <- function(series.name = "IP_EA_Q",
 
   output <- match.arg(output)
 
-  req_type <- requested_freq(series.name)
-  if (length(unique(req_type)) > 1) {
-    warning("Probably requested series have different frequency.")
-  }
-
-  all_data <- sophisthse0(series.name[1], ...)
-  all_meta <- attr(all_data, "metadata")
-  series.name <- series.name[-1]
+  all_data <- NULL
+  all_meta <- NULL
 
   for (sname in series.name) {
     one_data <- sophisthse0(sname, ...)
+
+    if (length(unique(colnames(one_data))) < ncol(one_data)) {
+      message("Non unique colnames: ", paste0(colnames(one_data), " "))
+      message("Adding numbers to them :)")
+      colnames(one_data)[2:ncol(one_data)] <-
+        paste0(colnames(one_data)[2:ncol(one_data)], "_", 1:(ncol(one_data) - 1))
+    }
+
     one_meta <- attr(one_data, "metadata")
     all_meta <- dplyr::rbind_list(all_meta, one_meta)
-    all_data <- merge(all_data, one_data, by = "T", all = TRUE)
+
+    if (is.null(all_data)) {
+      all_data <- one_data
+    } else {
+      all_data <- merge(all_data, one_data, by = "T", all = TRUE)
+    }
   }
 
   actual_frequency <- unique(all_meta$freq)
@@ -334,12 +324,22 @@ sophisthse <- function(series.name = "IP_EA_Q",
 #' @examples
 #' sophisthse_tables()
 sophisthse_tables <- function(...) {
-  message("The output is not complete. BRDATA is a table of tables.")
-  message("Some regional data cannot be parsed.")
+  message("Some table names may not work.")
+  message("On June 2016: MPP2 and TOPL_C do not work.")
+
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
   url_chr <- RCurl::getURL(url, ...)
   x <- stringr::str_match_all(url_chr,
               "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][, 2]
+  x <- x[!x == "BRDATA"]
+
+  # no need to parse BRDATA page, /exes/tables/BRDATA.htm
+  # all time series there have direct links from /hse/nindex.shtm
+
+  # remove regional data
+  x <- x[!stringr::str_detect(x, "^R200")]
+
+
   return(x)
 }
 

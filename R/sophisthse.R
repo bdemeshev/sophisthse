@@ -22,6 +22,33 @@ remove_slash_junk <- function(x) {
   return(x)
 }
 
+
+#' Replace cyrillic letters by corresponding latin letters
+#'
+#' Replace cyrillic letters by corresponding latin letters
+#'
+#' Replace cyrillic letters by corresponding latin letters
+#'
+#' @param x the character vector
+#' @return clean character vector
+#' @examples
+#' sophisthse:::decyrillic(intToUtf8(1057))
+decyrillic <- function(x) {
+  for (i in 1:length(x)) {
+    codes <- utf8ToInt(x[i])
+    codes[codes == 1052] <- 77 # M
+    codes[codes == 1045] <- 69 # E
+    codes[codes == 1040] <- 65 # A
+    codes[codes == 1057] <- 67 # C
+    codes[codes == 1061] <- 88 # X
+    codes[codes == 1054] <- 79 # O
+    x[i] <- intToUtf8(codes)
+  }
+  return(x)
+}
+
+
+
 #' Convert string with a number in Russian tradition in numeric
 #'
 #' This function is useful for automatic conversion of strings to numeric
@@ -145,6 +172,12 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
   tables <- XML::readHTMLTable(url.html)
   df <- tables[[1]]
 
+
+
+  # replace cyrillic letters by corresponding latin
+  colnames(df) <- decyrillic(colnames(df))
+
+
   # html parse
   url.parsed <- XML::htmlTreeParse(url.html)
   url.root <- XML::xmlRoot(url.parsed)
@@ -156,14 +189,18 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
   }
 
   # save units of measure
-  metadata <- dplyr::data_frame(tsname = colnames(df))
-  metadata$unit <- gsub("&nbsp", "", df[1, ])
+  # first column is Time
+  metadata <- dplyr::data_frame(tsname = colnames(df)[-1])
+  metadata$unit <- gsub("&nbsp", "", df[1, 2:ncol(df)])
   Encoding(metadata$unit) <- "UTF-8"
 
+  n.vars <- ncol(df) - 1  # remove 'T', the name of index
+
+
   # get full variable names
-  full.names <- rep("", ncol(df))
-  for (i in 2:ncol(df)) {
-    full.names[i] <- XML::xmlValue(url.root[[3]][[1]][[1]][[i - 1]])
+  full.names <- rep("", n.vars)
+  for (i in 1:n.vars) {
+    full.names[i] <- XML::xmlValue(url.root[[3]][[1]][[1]][[i]])
   }
   metadata$fullname <- remove_slash_junk(full.names)
   Encoding(metadata$fullname) <- "UTF-8"
@@ -212,24 +249,18 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 
 
 
-
-
-
   # get methodology, comment and source
 
-  n.vars <- ncol(df) - 1  # remove 'T', the name of index
-
-  metadata$methodology <- c("", get_stat_hse_info_vector(series.name,
-                                                         n.vars, "methodology", ...))
-  metadata$source <- c("", get_stat_hse_info_vector(series.name,
-                                                    n.vars, "source"), ...)
-  metadata$comment <- c("", get_stat_hse_info_vector(series.name,
-                                                     n.vars, "comment"), ...)
+  metadata$methodology <- get_stat_hse_info_vector(series.name,
+                                                         n.vars, "methodology", ...)
+  metadata$source <- get_stat_hse_info_vector(series.name,
+                                                    n.vars, "source", ...)
+  metadata$comment <- get_stat_hse_info_vector(series.name,
+                                                     n.vars, "comment", ...)
 
   metadata$freq <- t.type
 
 
-  metadata <- metadata[!metadata$tsname == "T", ]
   attr(df, "metadata") <- metadata
 
   return(df)

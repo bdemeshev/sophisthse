@@ -114,29 +114,6 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 
 
 
-#' Guess series frequency from it's name
-#'
-#' Guess series frequency from it's name for sophist.hse.ru
-#'
-#' Guess series frequency from it's name
-#' by checking presence of letters Y, M, Q
-#'
-#' @param series.name the name of a time series
-#' @return guessed frequency (1/4/12)
-#' @examples
-#' sophisthse:::requested_freq('WAG_Y')
-requested_freq <- function(series.name) {
-  req_type <- rep(1, length(series.name))  # we assume yearly ts by default
-  req_type[grepl("_Y$|_Y_", series.name)] <- 1
-  req_type[grepl("_M$|_M_", series.name)] <- 12
-  req_type[grepl("_Q$|_Q_", series.name)] <- 4
-  return(req_type)
-}
-
-
-
-
-
 #' Obtain time series from sophist.hse.ru
 #'
 #' This function obtains univariate time series from sophist.hse.ru
@@ -206,13 +183,6 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
     t.type <- 12  # monthly data
   }
 
-  req.type <- requested_freq(series.name)
-  if (!req.type == t.type) {
-    warning("The guessed requested frequency (", req.type,
-            ") does not match detected frequency (", t.type,
-            ")")
-  }
-
   # convert data to correct format
   if (t.type == 1) {
     df$T <- as.numeric(df$T)
@@ -278,11 +248,6 @@ sophisthse <- function(series.name = "IP_EA_Q",
                        output = c("ts", "zoo", "data.frame"), ...) {
 
   output <- match.arg(output)
-
-  req_type <- requested_freq(series.name)
-  if (length(unique(req_type)) > 1) {
-    warning("Probably requested series have different frequency.")
-  }
 
   all_data <- sophisthse0(series.name[1], ...)
   all_meta <- attr(all_data, "metadata")

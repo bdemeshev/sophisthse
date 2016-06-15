@@ -36,8 +36,14 @@ remove_slash_junk <- function(x) {
 #' rus2num('34 345,34')
 rus2num <- function(x) {
   x <- gsub(",", ".", x)
+
   # remove all but 0-9, . and minus:
   x <- gsub("[^0-9.-]+", "", x)
+
+  # remove lonely minus or lonely dot
+  x <- gsub("^-$", "", x)
+  x <- gsub("^\\.$", "", x)
+
   return(as.numeric(x))
 }
 
@@ -256,8 +262,8 @@ sophisthse <- function(series.name = "IP_EA_Q",
     one_data <- sophisthse0(sname, ...)
 
     if (length(unique(colnames(one_data))) < ncol(one_data)) {
-      warning("Non unique colnames: ", colnames(one_data))
-      warning("Adding numbers to them :)")
+      message("Non unique colnames: ", paste0(colnames(one_data), " "))
+      message("Adding numbers to them :)")
       colnames(one_data)[2:ncol(one_data)] <-
         paste0(colnames(one_data)[2:ncol(one_data)], "_", 1:(ncol(one_data) - 1))
     }

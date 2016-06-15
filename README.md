@@ -32,7 +32,7 @@ info <- attr(df, "metadata")
 info
 ```
 
-Список рядов (не совсем точный пока что) можно получить командой:
+Список доступных таблиц можно получить командой:
 ```r
 sophisthse_tables()
 ```
@@ -79,7 +79,7 @@ info <- attr(df, "metadata")
 info
 ```
 
-Approximate list of time series can be obtained by:
+The list of available tables:
 ```r
 sophisthse_tables()
 ```

@@ -1,3 +1,11 @@
+sophisthse 0.63
+-----------
+
+* Reliable output from `sophisthse_tables()`
+* Protection against unavailable methodology
+* Protection against duplicate column names
+* Some code cleanup
+
 sophisthse 0.62
 -----------
 

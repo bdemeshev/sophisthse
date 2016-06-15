@@ -12,3 +12,22 @@
 #' }
 #' @source downloaded with sophisthse("HHI_Q_I") command
 "hhi_q_i"
+
+#' Description of time series available at sophist.hse.ru
+#'
+#' A dataset containing description of time series available at \url{http://sophist.hse.ru/hse/nindex.shtml}.
+#' Downloaded on 15.06.2016.
+#'
+#' @format data.frame with 384 rows and 8 columns:
+#' \describe{
+#'   \item{table}{name of table that contains time series}
+#'   \item{tsname}{short time series name}
+#'   \item{freq}{frequency, 1 for yearly, 4 for quarterly, 12 for monthly data}
+#'   \item{unit}{measurement unit}
+#'   \item{fullname}{full time series name}
+#'   \item{methodology}{methodology of calculation}
+#'   \item{source}{source of time series}
+#'   \item{comments}{further comments for time series}
+#' }
+#' @source downloaded from \url{http://sophist.hse.ru/hse/nindex.shtml} on 15.06.2016
+"series_info"

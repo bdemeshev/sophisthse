@@ -94,7 +94,7 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
   # one entry for all variables
   # or more than 2 situations ;)
 
-  if (length(XML::xmlChildren(url.root)) > 3) {
+  if (length(XML::xmlChildren(url.root)) > 2) {
     # series CNSTR_Y, CNSTR_Q, CNSTR_M, GOV_M
     # have no methodology
 

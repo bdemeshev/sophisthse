@@ -74,8 +74,29 @@ rus2num <- function(x) {
   return(as.numeric(x))
 }
 
+#' Get table name from time series name
+#'
+#' Get table name from time series name
+#'
+#' On sophist.hse.ru time series are stored in tables. The package download whole tables
+#' and not individual time series. When user requests time series we need to know
+#' corresponding table name.
+#'
+#' @param ts_names character vector of time series or table names
+#' @return character vector of corresponding table names
+#' @export
+#' @examples
+#' series2tables("M2_Y")
+series2tables <- function(ts_names) {
+  table_names <- ts_names[ts_names %in% sophisthse::series_info$table]
+  ts_table_correspondance <- dplyr::data_frame(tsname = setdiff(ts_names, table_names))
+  ts_table_correspondance <- dplyr::left_join(ts_table_correspondance,
+                                              sophisthse::series_info[, c("table", "tsname")],
+                                              by = "tsname")
+  table_names <- c(table_names, ts_table_correspondance$table)
 
-
+  return(table_names)
+}
 
 
 #' Obtain additional information for specific time series
@@ -283,6 +304,9 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 #' df <- sophisthse('WAG_Y')
 sophisthse <- function(series.name = "IP_EA_Q",
                        output = c("ts", "zoo", "data.frame"), ...) {
+
+  # transform series name to table names (and leave table names)
+  series.name <- na.omit(unique(series2tables(series.name)))
 
   output <- match.arg(output)
 

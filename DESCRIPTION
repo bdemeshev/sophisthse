@@ -17,3 +17,6 @@ Description: Load Russian economic indicators from sophist.hse.ru.
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

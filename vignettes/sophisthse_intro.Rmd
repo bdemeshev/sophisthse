@@ -10,21 +10,26 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-  Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
-  ```{r, eval=FALSE}
+Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
+```{r, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("bdemeshev/sophisthse")
 ```
 Для новичков в R: Пакеты устанавливаются один раз, и каждый раз для скачанивания рядов выполнять эти команды совершенно ненужно :)
 
 
-Пример простого использования в паре с пакетом `forecast`:
-  ```{r, warning=FALSE, message=FALSE}
+Подключаем пакет в паре с пакетом `forecast`.
+```{r, warning=FALSE, message=FALSE}
 library("sophisthse") # для скачивания данных
 library("forecast") # графики временных рядов, ARIMA/ETS модели
+```
+
+Загружаем нужный ряд и смотрим его начало для проверки, что всё загрузилось:
+```{r}
 df <- sophisthse("WAG_Y")
 head(df)
 ```
+
 
 Смотрим описание данных:
 ```{r}
@@ -32,35 +37,47 @@ info <- sophisthse_metadata(df)
 info
 ```
 
-Достаём один из рядов и строим графики:
-```{r}
+Достаём один из двух рядов и строим графики:
+```{r, fig.width = 7, fig.height = 6}
 WAG_C_Y <- df[, 1]
 ggtsdisplay(WAG_C_Y)
 ```
 
 
-Еще несколько примеров использования:
-  ```{r, eval=FALSE}
+Можно заказать данные в формате zoo:
+```{r}
 wagez <- sophisthse("WAG_Y", output = "zoo")
+head(wagez)
+```
+
+Или простого data.frame:
+```{r}
+wagez <- sophisthse("GDPVA_Y", output = "data.frame")
+head(wagez)
+```
+
+Можно загрузить несколько одночастотных рядов сразу:
+```{r}
 wgpd <- sophisthse(c("WAG_Y", "GDPVA_Y"))
-wagez <- sophisthse(c("WAG_Y", "GDPVA_Y"), output = "data.frame")
+head(wgpd)
 ```
 
 
-Полный список рядов хранится в наборе данных `series_info`
+
+Полный список рядов хранится в встроенном наборе данных `series_info`
 ```{r}
 head(series_info)
 ```
 
 
-Удобно глянуть в Rstudio:
+Полный список рядов удобно глянуть в Rstudio:
 ```{r, eval=FALSE}
 View(series_info)
 ```
 
 
 Список актуальных доступных таблиц можно получить командой:
-  ```{r}
+```{r}
 sophisthse_tables()
 ```
 

@@ -44,7 +44,7 @@ View(series_info)
 sophisthse_tables()
 ```
 
-Есть очень короткое введение в пакет [в виде виньетки](https://github.com/bdemeshev/sophisthse/inst/doc/sophisthse_intro.html).
+Есть очень короткое введение в пакет [в виде виньетки](http://htmlpreview.github.io/?https://github.com/bdemeshev/sophisthse/blob/master/inst/doc/sophisthse_intro.html).
 
 
 Не очень срочные планы по развитию:

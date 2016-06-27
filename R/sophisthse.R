@@ -22,6 +22,23 @@ remove_slash_junk <- function(x) {
   return(x)
 }
 
+#' Get metadata from downloaded time series
+#'
+#' Get metadata from downloaded time series
+#'
+#' Get metadata from downloaded time series
+#'
+#' @param df downloaded multivariate time series or data.frame
+#' @return data.frame with information
+#' @export
+#' @examples
+#' df <- sophisthse0('WAG_Y')
+#' sophisthse_metadata(df)
+sophisthse_metadata <- function(df) {
+  info <- attr(df, "metadata")
+  return(info)
+}
+
 
 #' Replace cyrillic letters by corresponding latin letters
 #'
@@ -324,7 +341,7 @@ sophisthse <- function(series.name = "IP_EA_Q",
     }
 
     one_meta <- attr(one_data, "metadata")
-    all_meta <- dplyr::rbind_list(all_meta, one_meta)
+    all_meta <- dplyr::bind_rows(all_meta, one_meta)
 
     if (is.null(all_data)) {
       all_data <- one_data

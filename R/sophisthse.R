@@ -1,9 +1,4 @@
-#' sophisthse
-#'
-#' @name sophisthse
-#' @docType package
-#' @author Boris Demeshev
-NULL
+
 
 #' Remove slash junk
 #'

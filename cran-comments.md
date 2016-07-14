@@ -1,7 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Rewritten url: <http://sophist.hse.ru/> rather than (sophist.hse.ru)
+* Rewritten url in DESCRIPTION: <http://sophist.hse.ru/> rather than (sophist.hse.ru)
 
 
 ## Test environments

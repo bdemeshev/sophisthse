@@ -13,7 +13,7 @@ Imports:
     zoo,
     dplyr (>= 0.2),
     stringr
-Description: Load Russian economic indicators from the Archive of Economic and Social Data (sophist.hse.ru).
+Description: Load Russian economic indicators from the Archive of Economic and Social Data <http://sophist.hse.ru/>.
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1

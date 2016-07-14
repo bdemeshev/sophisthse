@@ -318,7 +318,7 @@ sophisthse <- function(series.name = "IP_EA_Q",
                        output = c("ts", "zoo", "data.frame"), ...) {
 
   # transform series name to table names (and leave table names)
-  series.name <- na.omit(unique(series2tables(series.name)))
+  series.name <- stats::na.omit(unique(series2tables(series.name)))
 
   output <- match.arg(output)
 
@@ -367,7 +367,7 @@ sophisthse <- function(series.name = "IP_EA_Q",
     start_small_unit <- 1 + round(actual_frequency * (start_numeric - start_year))
     start_ts <- c(start_year, start_small_unit)
 
-    all_data <- ts(dplyr::select(all_data, -T), start = start_ts,
+    all_data <- stats::ts(dplyr::select(all_data, -T), start = start_ts,
                    frequency = actual_frequency,
                    names = all_meta$tsname)
   }

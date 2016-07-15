@@ -4,12 +4,19 @@ sophisthse
 ==========
 
 
-Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
+Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет выложен на официальный репозиторий CRAN и ставится стандартно:
+```r
+install.packages("sophisthse")
+```
+Для новичков в R: Пакеты устанавливаются один раз, и каждый раз для скачанивания рядов выполнять эту команду совершенно ненужно :)
+
+
+Разработка пакета ведётся на гитхабе. Если есть более свежая версия пакета, чем на CRAN, то её можно поставить командами:
 ```r
 install.packages("devtools")
 devtools::install_github("bdemeshev/sophisthse")
 ```
-Для новичков в R: Пакеты устанавливаются один раз, и каждый раз для скачанивания рядов выполнять эти команды совершенно ненужно :)
+
 
 
 Пример простого использования:
@@ -49,24 +56,19 @@ sophisthse_tables()
 
 Не очень срочные планы по развитию:
 
-
 - [ ] ряды пересматриваются. Добавить дату скачивания? Вести архив обновлений?
-- [x] команда для получения списка всех рядов --- скорректировать (туда сразу качать описание переменной)
-- [x] добавить labels для смысла переменных в data.frame, чтобы красиво отображалось в Rstudio (а-ля haven)
-- [x] тип `ts` в output для корретного отображения дат при использовании пакета `forecast`.
-- [x] убрать warning при скачивании рядов с пропущенными данными. Всё работает корректно, но для благозвучия лучше убрать. Возникает при вызове rus2num, например, `sophisthse("HHI_Q_I")`
-- [x] у некоторых рядов в названии есть русская М вместо английской M. Переделать такой трэшак в английские буквы :)
-- [x] в коде разделить: название таблицы с рядами и название ряда (нужно!) при этом базовая команда sophisthse должна кушать и названия таблиц и названия рядов и возвращать то, что хочет пользователь. Нужна просто функция `series2tables` :)
 
-Разработчику:
-
-- При проверке пакет командой `check()` появляется заметка (note) о строках помеченных UTF-8. Это ок. Единицы измерения, методология, источник и прочее содержат русские буквы.
 
 
 ### English translation:
 
 
-R package to download data from [sophist.hse.ru](http://sophist.hse.ru/). The package `sophisthse` may be installed via:
+R package to download data from [sophist.hse.ru](http://sophist.hse.ru/). The package `sophisthse` is available on CRAN and may be installed via:
+```r
+install.packages("sophisthse")
+```
+
+If there is more recent version of the package on github, you may install it with commands:
 ```r
 install.packages("devtools")
 devtools::install_github("bdemeshev/sophisthse")

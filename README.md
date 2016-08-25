@@ -1,4 +1,4 @@
-[![Travis-CI Build Status](https://travis-ci.org/bdemeshev/sophisthse.svg?branch=master)](https://travis-ci.org/bdemeshev/sophisthse)
+[![Travis-CI Build Status](https://travis-ci.org/bdemeshev/sophisthse.svg?branch=master)](https://travis-ci.org/bdemeshev/sophisthse) ![](http://cranlogs.r-pkg.org/badges/sophisthse)
 
 sophisthse
 ==========
@@ -99,7 +99,7 @@ Built-in information about time series available for download maybe nicely viewe
 ```r
 View(series_info)
 ```
-Or just `series_info` without Rstudio. 
+Or just `series_info` without Rstudio.
 
 The list of available tables:
 ```r

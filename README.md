@@ -54,9 +54,7 @@ sophisthse_tables()
 Есть очень короткое введение в пакет [в виде виньетки](http://htmlpreview.github.io/?https://github.com/bdemeshev/sophisthse/blob/master/inst/doc/sophisthse_intro.html).
 
 
-Не очень срочные планы по развитию:
-
-- [ ] ряды пересматриваются. Добавить дату скачивания? Вести архив обновлений?
+Предложения/найденные ошибки можно [глянуть или сообщить на gh-issues](https://github.com/bdemeshev/sophisthse/issues/).
 
 
 

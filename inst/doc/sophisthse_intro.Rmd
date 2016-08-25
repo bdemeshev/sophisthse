@@ -1,6 +1,6 @@
 ---
 title: "Введение в пакет sophisthse"
-lang: russian
+lang: ru-RU
 author: "Борис Демешев"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -12,10 +12,17 @@ vignette: >
 
 Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
 ```{r, eval=FALSE}
+install.packages("sophisthse")
+```
+Для новичков в R: Пакеты устанавливаются один раз, и каждый раз для скачанивания рядов выполнять эту команду совершенно ненужно :)
+
+
+Разработка пакета ведётся на гитхабе. Если есть более свежая версия пакета, чем на CRAN, то её можно поставить командами:
+```{r, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("bdemeshev/sophisthse")
 ```
-Для новичков в R: Пакеты устанавливаются один раз, и каждый раз для скачанивания рядов выполнять эти команды совершенно ненужно :)
+
 
 
 Подключаем пакет в паре с пакетом `forecast`.
@@ -80,4 +87,3 @@ View(series_info)
 ```{r}
 sophisthse_tables()
 ```
-

@@ -396,7 +396,7 @@ sophisthse_tables <- function(...) {
   url <- "http://sophist.hse.ru/hse/nindex.shtml"
   url_chr <- RCurl::getURL(url, ...)
   x <- stringr::str_match_all(url_chr,
-              "/tables/([A-Z0-9\\-\\_]+)\\.html")[[1]][, 2]
+              "/tables/([A-Z0-9\\-\\_]+)\\.htm")[[1]][, 2]
   x <- x[!x == "BRDATA"]
 
   # no need to parse BRDATA page, /exes/tables/BRDATA.htm

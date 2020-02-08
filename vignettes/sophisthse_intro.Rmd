@@ -6,8 +6,10 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Введение в пакет sophisthse}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 Пакет `sophisthse` предназначен для скачивания временных рядов с [sophist.hse.ru](http://sophist.hse.ru/). Пакет можно установить командами:
@@ -52,13 +54,13 @@ head(wagez)
 
 Или простого data.frame:
 ```{r}
-wagez <- sophisthse("GDPVA_Y", output = "data.frame")
+wagez <- sophisthse("GDPI_Y", output = "data.frame")
 head(wagez)
 ```
 
 Можно загрузить несколько одночастотных рядов сразу:
 ```{r}
-wgpd <- sophisthse(c("WAG_Y", "GDPVA_Y"))
+wgpd <- sophisthse(c("WAG_Y", "GDPI_Y"))
 head(wgpd)
 ```
 

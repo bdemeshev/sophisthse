@@ -4,13 +4,16 @@
 \alias{sophisthse}
 \title{Obtain multivariate time series from sophist.hse.ru}
 \usage{
-sophisthse(series.name = "IP_EA_Q", output = c("ts", "zoo", "data.frame"),
-  ...)
+sophisthse(
+  series.name = "IP_EA_Q",
+  output = c("ts", "zoo", "data.frame", "tsibble"),
+  ...
+)
 }
 \arguments{
 \item{series.name}{the names of the time series, i.e. 'WAG_Y'}
 
-\item{output}{the desired output format, either 'ts', 'zoo' or 'data.frame'}
+\item{output}{the desired output format, either 'ts', 'zoo', 'data.frame' or 'tsibble'.}
 
 \item{...}{further arguments passed into getURL. One may use them to work with proxy.}
 }
@@ -28,4 +31,3 @@ into the attribute 'metadata'.
 df <- sophisthse('IP_EA_Q')
 df <- sophisthse('WAG_Y')
 }
-

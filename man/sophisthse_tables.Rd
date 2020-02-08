@@ -22,4 +22,3 @@ BRDATA is a table of tables :) And also some regional data cannot be parsed.
 \examples{
 sophisthse_tables()
 }
-

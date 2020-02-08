@@ -4,8 +4,12 @@
 \alias{get_stat_hse_info_vector}
 \title{Obtain additional information for specific time series}
 \usage{
-get_stat_hse_info_vector(series.name = "IP_EA_Q", n.vars = 1,
-  info = c("methodology", "source", "comment"), ...)
+get_stat_hse_info_vector(
+  series.name = "IP_EA_Q",
+  n.vars = 1,
+  info = c("methodology", "source", "comment"),
+  ...
+)
 }
 \arguments{
 \item{series.name}{the names of the time series}
@@ -29,4 +33,3 @@ from sophist.hse.ru. Either 'methodology', 'source' or 'comment'.
 \examples{
 info <- sophisthse:::get_stat_hse_info_vector('IP_EA_Q', 1, 'methodology')
 }
-

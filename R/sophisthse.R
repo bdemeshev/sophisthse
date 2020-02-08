@@ -182,10 +182,9 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 
 #' Obtain time series from sophist.hse.ru
 #'
-#' This function obtains univariate time series from sophist.hse.ru
+#' This function obtains table of time series from sophist.hse.ru
 #'
-#' The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
-#' into the attribute 'metadata'.
+#' The output is tibble.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
@@ -197,13 +196,13 @@ get_stat_hse_info_vector <- function(series.name = "IP_EA_Q",
 sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 
   # download main data
-  url <- paste("http://sophist.hse.ru/exes/tables/", series.name,
+  url <- paste("http://sophist.hse.ru/hse/1/tables/", series.name,
                ".htm", sep = "")
   url.html <- RCurl::getURL(url, .encoding = "UTF-8", ...)
 
   # get main table
   tables <- XML::readHTMLTable(url.html)
-  df <- tables[[1]]
+  df <- tibble::as_tibble(tables[[1]])
 
 
 
@@ -217,13 +216,11 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 
 
   # all to character
-  for (i in 1:ncol(df)) {
-    df[, i] <- as.character(df[, i])
-  }
+  df <- dplyr::mutate_all(df, as.character)
 
   # save units of measure
   # first column is Time
-  metadata <- dplyr::data_frame(tsname = colnames(df)[-1])
+  metadata <- tibble::tibble(tsname = colnames(df)[-1])
   metadata$unit <- gsub("&nbsp", "", df[1, 2:ncol(df)])
   Encoding(metadata$unit) <- "UTF-8"
 
@@ -243,10 +240,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
   df <- df[2:(nrow(df) - 4), ]
 
   # remove spaces, replace ',' by '.', convert to numeric
-  for (i in 2:ncol(df)) {
-    df[, i] <- rus2num(df[, i])
-  }
-
+  df = dplyr::mutate_at(df, -T, rus2num)
 
   # pretty time index
 
@@ -307,7 +301,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 #' into the attribute 'metadata'.
 #'
 #' @param series.name the names of the time series, i.e. 'WAG_Y'
-#' @param output the desired output format, either 'ts', 'zoo' or 'data.frame'
+#' @param output the desired output format, either 'ts', 'zoo', 'data.frame' or 'tsibble'.
 #' @param ... further arguments passed into getURL. One may use them to work with proxy.
 #' @return data.frame with the corresponding time series
 #' @export
@@ -315,7 +309,7 @@ sophisthse0 <- function(series.name = "IP_EA_Q", ...) {
 #' df <- sophisthse('IP_EA_Q')
 #' df <- sophisthse('WAG_Y')
 sophisthse <- function(series.name = "IP_EA_Q",
-                       output = c("ts", "zoo", "data.frame"), ...) {
+                       output = c("ts", "zoo", "data.frame", "tsibble"), ...) {
 
   # transform series name to table names (and leave table names)
   series.name <- stats::na.omit(unique(series2tables(series.name)))
@@ -371,6 +365,11 @@ sophisthse <- function(series.name = "IP_EA_Q",
                    frequency = actual_frequency,
                    names = all_meta$tsname)
   }
+  
+  if (output == "tsibble") {
+    all_data <- tsibble::as_tsibble(all_data, regular = TRUE, index = T)
+  }
+  
 
 
   attr(all_data, "metadata") <- all_meta

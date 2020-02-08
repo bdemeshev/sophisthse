@@ -22,4 +22,3 @@ This function removes spaces and converts string to number.
 \examples{
 rus2num('34 345,34')
 }
-

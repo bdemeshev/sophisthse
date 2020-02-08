@@ -22,4 +22,3 @@ Source: \url{http://sophist.hse.ru/hse/nindex.shtml}.
 Downloaded on 18.02.2016.
 }
 \keyword{datasets}
-

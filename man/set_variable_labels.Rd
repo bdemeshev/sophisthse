@@ -25,4 +25,3 @@ with `View()` in Rstudio.
 cars2 <- set_variable_labels(cars,
   labels = c("Speed (mph)", "Stopping distance (ft)"))
 }
-

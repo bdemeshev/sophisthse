@@ -19,6 +19,5 @@ Remove slash junk
 Remove slash junk
 }
 \examples{
-sophisthse:::remove_slash_junk('xxx \\n yyy')
+sophisthse:::remove_slash_junk('xxx \n yyy')
 }
-

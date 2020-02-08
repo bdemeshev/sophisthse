@@ -26,4 +26,3 @@ A dataset containing description of time series available at \url{http://sophist
 Downloaded on 15.06.2016.
 }
 \keyword{datasets}
-

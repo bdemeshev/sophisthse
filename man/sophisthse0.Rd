@@ -15,14 +15,12 @@ sophisthse0(series.name = "IP_EA_Q", ...)
 data.frame with the corresponding time series
 }
 \description{
-This function obtains univariate time series from sophist.hse.ru
+This function obtains table of time series from sophist.hse.ru
 }
 \details{
-The output may be choosen to be 'ts', 'zoo' or 'data.frame'. Metadata is saved
-into the attribute 'metadata'.
+The output is tibble.
 }
 \examples{
 df <- sophisthse0('IP_EA_Q')
 df <- sophisthse0('WAG_Y')
 }
-

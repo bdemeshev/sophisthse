@@ -20,8 +20,8 @@ devtools::install_github("bdemeshev/sophisthse")
 
 Подключаем пакет в паре с пакетом `forecast`.
 ```{r, warning=FALSE, message=FALSE}
-library("sophisthse") # для скачивания данных
-library("forecast") # графики временных рядов, ARIMA/ETS модели
+library(sophisthse) # для скачивания данных
+library(forecast) # графики временных рядов, ARIMA/ETS модели
 ```
 
 Загружаем нужный ряд и смотрим его начало для проверки, что всё загрузилось:

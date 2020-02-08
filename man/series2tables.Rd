@@ -23,4 +23,3 @@ corresponding table name.
 \examples{
 series2tables("M2_Y")
 }
-

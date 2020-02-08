@@ -22,4 +22,3 @@ Get metadata from downloaded time series
 df <- sophisthse0('WAG_Y')
 sophisthse_metadata(df)
 }
-

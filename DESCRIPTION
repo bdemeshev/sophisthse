@@ -1,8 +1,8 @@
 Package: sophisthse
 Type: Package
 Title: Load Russian Economic Indicators from the Archive of Economic and Social Data
-Version: 0.7.0
-Date: 2016-06-27
+Version: 0.8.0
+Date: 2020-02-08
 Author: Boris Demeshev
 Maintainer: Boris Demeshev <boris.demeshev@gmail.com>
 Depends:
@@ -12,11 +12,13 @@ Imports:
     RCurl,
     zoo,
     dplyr (>= 0.2),
+    tibble,
+    tsibble,
     stringr
 Description: Load Russian economic indicators from the Archive of Economic and Social Data <http://sophist.hse.ru/>.
 License: GPL-3
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 7.0.2
 Suggests: knitr,
     rmarkdown,
     forecast (>= 7.0)

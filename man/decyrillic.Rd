@@ -21,4 +21,3 @@ Replace cyrillic letters by corresponding latin letters
 \examples{
 sophisthse:::decyrillic(intToUtf8(1057))
 }
-

@@ -4,12 +4,14 @@
 \name{hhi_q_i}
 \alias{hhi_q_i}
 \title{Quarterly Russian real money income}
-\format{A zooreg object with 93 rows and 3 variables:
+\format{
+A zooreg object with 93 rows and 3 variables:
 \describe{
   \item{HHI_Q_DIRI}{Index of real money income. 1992 IV = 100}
   \item{HHI_Q_DIRI_SA}{Seasonally adjusted index of real money income. 1992 IV = 100}
   \item{HHI_Q}{Real money income per capita}
-}}
+}
+}
 \source{
 downloaded with sophisthse("HHI_Q_I") command
 }

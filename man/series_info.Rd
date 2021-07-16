@@ -4,7 +4,8 @@
 \name{series_info}
 \alias{series_info}
 \title{Description of time series available at sophist.hse.ru}
-\format{data.frame with 384 rows and 8 columns:
+\format{
+data.frame with 384 rows and 8 columns:
 \describe{
   \item{table}{name of table that contains time series}
   \item{tsname}{short time series name}
@@ -14,7 +15,8 @@
   \item{methodology}{methodology of calculation}
   \item{source}{source of time series}
   \item{comments}{further comments for time series}
-}}
+}
+}
 \source{
 downloaded from \url{http://sophist.hse.ru/hse/nindex.shtml} on 15.06.2016
 }

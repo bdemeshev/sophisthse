@@ -18,7 +18,7 @@ Imports:
 Description: Load Russian economic indicators from the Archive of Economic and Social Data <http://sophist.hse.ru/>.
 License: GPL-3
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown,
     forecast (>= 7.0)

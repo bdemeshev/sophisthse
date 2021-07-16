@@ -101,7 +101,7 @@ rus2num <- function(x) {
 #' series2tables("M2_Y")
 series2tables <- function(ts_names) {
   table_names <- ts_names[ts_names %in% sophisthse::series_info$table]
-  ts_table_correspondance <- dplyr::data_frame(tsname = setdiff(ts_names, table_names))
+  ts_table_correspondance <- dplyr::tibble(tsname = setdiff(ts_names, table_names))
   ts_table_correspondance <- dplyr::left_join(ts_table_correspondance,
                                               sophisthse::series_info[, c("table", "tsname")],
                                               by = "tsname")
@@ -365,11 +365,11 @@ sophisthse <- function(series.name = "IP_EA_Q",
                    frequency = actual_frequency,
                    names = all_meta$tsname)
   }
-  
+
   if (output == "tsibble") {
     all_data <- tsibble::as_tsibble(all_data, regular = TRUE, index = T)
   }
-  
+
 
 
   attr(all_data, "metadata") <- all_meta

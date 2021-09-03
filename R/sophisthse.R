@@ -370,6 +370,10 @@ sophisthse <- function(series.name = "IP_EA_Q",
     if (actual_frequency == 4) {
       all_data$T = tsibble::yearquarter(all_data$T)
     }
+    if (actual_frequency == 12) {
+      all_data$T = tsibble::yearmonth(all_data$T)
+    }
+
     all_data <- tsibble::as_tsibble(all_data, regular = TRUE, index = T)
   }
 
